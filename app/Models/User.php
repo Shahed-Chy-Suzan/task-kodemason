@@ -37,4 +37,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function topups()
+    {
+        return $this->hasMany(Topup::class);
+    }
+
+    public function topTopupUsers()
+    {
+        return $this->hasOne(TopTopupUser::class);
+    }
+
+
 }
