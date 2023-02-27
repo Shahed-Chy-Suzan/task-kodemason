@@ -48,11 +48,11 @@ class TopupController extends Controller
         DB::transaction(function () use ($topUsers) {
             TopTopupUser::query()->delete();
 
+            $data = new TopTopupUser();
             foreach ($topUsers as $user) {
-                TopTopupUser::create([
-                        'user_id' => $user->id,
-                        'count' => $user->topups_count,
-                ]);
+                $data->user_id = $user->id;
+                $data->user_id = $user->topups_count;
+                $data->save();
             }
         });
 

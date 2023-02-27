@@ -17,6 +17,7 @@ class CreateTopTopupUsersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('count')->default(0);
+            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
         });

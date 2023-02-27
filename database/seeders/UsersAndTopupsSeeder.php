@@ -16,13 +16,13 @@ class UsersAndTopupsSeeder extends Seeder
      */
     public function run()
     {
-        // User::factory()->count(500)->create();
+        User::factory()->count(500)->create();
 
         for ($i = 0; $i < 3; $i++) {
             $date = Carbon::now()->subDays($i);
             $topups = [];
 
-            for ($j = 0; $j < 200000; $j++) {
+            for ($j = 0; $j < 2000; $j++) {
                 $topups[] = [
                     'user_id' => rand(1, 500),
                     'amount' => rand(10, 1000),
