@@ -16,7 +16,7 @@ class UsersAndTopupsSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->count(500)->create();
+        // User::factory()->count(500)->create();
 
         for ($i = 0; $i < 3; $i++) {
             $date = Carbon::now()->subDays($i);
