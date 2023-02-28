@@ -63,17 +63,14 @@ class TopupController extends Controller
             }
         });
 
-        $topUsers = User::query()
-                    ->with('topTopupUsers')
-                    ->has('topTopupUsers')
-                    ->get()
+        $topUsers = User::query()->with('topTopupUsers')->has('topTopupUsers')->get()
                     ->sortByDesc(function ($user) {
                         return $user->topTopupUsers->count;
                     })
                     ->values();
 
         $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.process')]);
-        
+
         return view('topup.index', compact('topUsers'));
     }
 
