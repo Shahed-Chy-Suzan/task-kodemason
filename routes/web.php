@@ -14,10 +14,5 @@ use App\Http\Controllers\TopupController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
 Route::get('/', [TopupController::class, 'index'])->name('topup.index');
 Route::get('/process-top-topup-users', [TopupController::class, 'processTopTopupUsers'])->name('topup.process');

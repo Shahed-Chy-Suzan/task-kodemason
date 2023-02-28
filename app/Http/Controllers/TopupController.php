@@ -29,11 +29,10 @@ class TopupController extends Controller
                 }])
                 ->orderByDesc('topups_count')
                 ->take(10)
-                // ->paginate(2);
                 ->get();
 
         $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.index')]);
-        // dd($topUsers);
+
         return view('topup.index', compact('topUsers'));
     }
 
@@ -51,7 +50,6 @@ class TopupController extends Controller
                 ->orderByDesc('topups_count')
                 ->take(10)
                 ->get();
-                // dd($getTopUsers);
 
         // Save top topup users to TopTopupUser table
         DB::transaction(function () use ($getTopUsers) {
@@ -68,7 +66,6 @@ class TopupController extends Controller
         $topUsers = User::query()
                     ->with('topTopupUsers')
                     ->has('topTopupUsers')
-                    // ->paginate(2);
                     ->get()
                     ->sortByDesc(function ($user) {
                         return $user->topTopupUsers->count;
@@ -76,7 +73,7 @@ class TopupController extends Controller
                     ->values();
 
         $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.process')]);
-        // dd($topUsers);
+        
         return view('topup.index', compact('topUsers'));
     }
 

@@ -16,7 +16,7 @@
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
                 <span>Top Topup Users</span>
-                <a href="{{route('topup.index')}}" class="text-white float-end">Home</a>
+                <a href="{{route('topup.index')}}" class="text-white float-end"> <i class="fas fa-home"></i> Home</a>
             </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('topup.index') }}">
@@ -60,10 +60,21 @@
 
                 <form method="get" action="{{ route('topup.process') }}">
                     @csrf
-                    <button type="submit" class="btn btn-primary"> <i class="fas fa-users"></i> Get Yesterday's Top Topup Users</button>
+                    <button type="submit" class="btn btn-primary"> <i class="fas fa-users"></i> Click here to Get Yesterday's Top Topup Users</button>
                 </form>
 
             </div>
+        </div>
+
+        <div class="py-5 mt-5">
+            <h6>
+                Important command to run this project :
+            </h6>
+            <ul>
+                <li>php artisan serve</li>
+                <li>php artisan topup:process</li>
+                <li>php artisan queue:work</li>
+            </ul>
         </div>
     </div>
 
