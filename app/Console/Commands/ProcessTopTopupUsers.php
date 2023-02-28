@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\TopTopupUserJob;
 use Illuminate\Console\Command;
 
 class ProcessTopTopupUsers extends Command
@@ -39,12 +40,17 @@ class ProcessTopTopupUsers extends Command
     {
         \Log::info("Cron is working fine!");
 
-        $controller = app()->make(\App\Http\Controllers\TopupController::class);
-        $controller->processTopTopupUsers();
+
+        TopTopupUserJob::dispatch();
+        // $controller = app()->make(\App\Http\Controllers\TopupController::class);
+        // $controller->processTopTopupUsers();
+
+        $this->info('Top topup users have been updated!');
+
+        //not working
         // app(TopupController::class)->processTopTopupUsers();
         //app(TopupController::class)->processTopTopupUsers()->onQueue('default');
 
-        $this->info('Top topup users have been updated!');
 
         //$this->call('get', '/process-top-topup-users');
         // return 0;

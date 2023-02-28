@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2023 at 08:30 PM
+-- Generation Time: Feb 28, 2023 at 09:26 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.33
 
@@ -24,6 +24,22 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint(3) UNSIGNED NOT NULL,
+  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
+  `available_at` int(10) UNSIGNED NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -40,7 +56,8 @@ CREATE TABLE `migrations` (
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (16, '2014_10_12_000000_create_users_table', 1),
 (17, '2023_02_27_202253_create_topups_table', 1),
-(18, '2023_02_27_202303_create_top_topup_users_table', 1);
+(18, '2023_02_27_202303_create_top_topup_users_table', 1),
+(19, '2023_03_01_015656_create_jobs_table', 2);
 
 -- --------------------------------------------------------
 
@@ -6088,16 +6105,16 @@ CREATE TABLE `top_topup_users` (
 --
 
 INSERT INTO `top_topup_users` (`id`, `user_id`, `count`, `created_at`, `updated_at`) VALUES
-(1197, 247, 11, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1198, 33, 10, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1199, 74, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1200, 341, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1201, 346, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1202, 128, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1203, 384, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1204, 387, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1205, 150, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36'),
-(1206, 187, 9, '2023-02-28 19:28:36', '2023-02-28 19:28:36');
+(1317, 247, 11, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1318, 33, 10, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1319, 74, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1320, 341, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1321, 346, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1322, 128, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1323, 384, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1324, 387, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1325, 150, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06'),
+(1326, 187, 9, '2023-02-28 20:26:06', '2023-02-28 20:26:06');
 
 -- --------------------------------------------------------
 
@@ -6628,6 +6645,13 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 --
 
 --
+-- Indexes for table `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `jobs_queue_index` (`queue`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -6659,10 +6683,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `topups`
@@ -6674,7 +6704,7 @@ ALTER TABLE `topups`
 -- AUTO_INCREMENT for table `top_topup_users`
 --
 ALTER TABLE `top_topup_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1207;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1327;
 
 --
 -- AUTO_INCREMENT for table `users`
