@@ -15,7 +15,8 @@
         </div>
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                Top Topup Users
+                <span>Top Topup Users</span>
+                <a href="{{route('topup.index')}}" class="text-white float-end">Home</a>
             </div>
             <div class="card-body">
                 <form method="GET" action="{{ route('topup.index') }}">
@@ -35,13 +36,15 @@
                 <table class="table table-bordered table-hover table-responsive border-danger">
                     <thead>
                         <tr>
+                            <th>SL No.</th>
                             <th>User</th>
                             <th>Topups</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($users as $user)
+                        @forelse ($topUsers as $key => $user)
                         <tr>
+                            <td>{{ ++$key }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ optional($user->topTopupUsers)->count ?? 0 }}</td>
                         </tr>
@@ -51,13 +54,13 @@
                     </tbody>
                 </table>
 
-                {{ $users->appends(request()->input())->links() }}
+                {{ $topUsers->appends(request()->input())->links() }}
 
                 <br>
 
                 <form method="get" action="{{ route('topup.process') }}">
                     @csrf
-                    <button type="submit" class="btn btn-primary">Process Top Topup Users</button>
+                    <button type="submit" class="btn btn-primary"> <i class="fas fa-users"></i> Get Yesterday's Top Topup Users</button>
                 </form>
 
             </div>

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\TopTopupUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class TopupController extends Controller
@@ -14,28 +17,33 @@ class TopupController extends Controller
         // Search by user
         $search = $request->input('search');
 
-        $users = User::query()
+        $topUsers = User::query()
                 ->when($search, function ($query, $search) {
                     return $query->where('name', 'like', "%$search%");
                 })
-                ->with(['topTopupUsers' => function ($query) {
-                        $query->orderByDesc('count');
+                ->whereHas('topups', function ($query) {
+                    $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+                })
+                ->withCount(['topups' => function ($query) {
+                    $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
                 }])
-                ->paginate(2);
+                ->orderByDesc('topups_count')
+                ->take(10)
+                // ->paginate(2);
+                ->get();
 
-        return view('topup.index', compact('users'));
+        $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.index')]);
+        // dd($topUsers);
+        return view('topup.index', compact('topUsers'));
     }
 
 
     public function processTopTopupUsers()
     {
         // Find top topup users of the previous day
-        $topUsers = User::query()
+        $getTopUsers = User::query()
                 ->whereHas('topups', function ($query) {
                         $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
-                        // ->groupBy('user_id');
-                        // ->selectRaw('user_id, sum(amount) as total_topup');
-                        // $query->whereDate('created_at', Carbon::yesterday());
                 })
                 ->withCount(['topups' => function ($query) {
                         $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
@@ -43,20 +51,41 @@ class TopupController extends Controller
                 ->orderByDesc('topups_count')
                 ->take(10)
                 ->get();
+                // dd($getTopUsers);
 
         // Save top topup users to TopTopupUser table
-        DB::transaction(function () use ($topUsers) {
+        DB::transaction(function () use ($getTopUsers) {
             TopTopupUser::query()->delete();
 
-            $data = new TopTopupUser();
-            foreach ($topUsers as $user) {
+            foreach ($getTopUsers as $user) {
+                $data = new TopTopupUser();
                 $data->user_id = $user->id;
-                $data->user_id = $user->topups_count;
+                $data->count = $user->topups_count;
                 $data->save();
             }
         });
 
-        return redirect()->route('topup.index')->with('success', 'Top topup users have been updated!');
+        $topUsers = User::query()
+                    ->with('topTopupUsers')
+                    ->has('topTopupUsers')
+                    // ->paginate(2);
+                    ->get()
+                    ->sortByDesc(function ($user) {
+                        return $user->topTopupUsers->count;
+                    })
+                    ->values();
+
+        $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.process')]);
+        // dd($topUsers);
+        return view('topup.index', compact('topUsers'));
+    }
+
+
+    function paginate($items, $perPage = 15, $page = null, $options = [])
+    {
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $items = $items instanceof Collection ? $items : Collection::make($items);
+        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 
 }

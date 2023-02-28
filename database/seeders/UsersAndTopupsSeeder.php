@@ -22,7 +22,7 @@ class UsersAndTopupsSeeder extends Seeder
             $date = Carbon::now()->subDays($i);
             $topups = [];
 
-            for ($j = 0; $j < 2000; $j++) {
+            for ($j = 0; $j < 200000; $j++) {
                 $topups[] = [
                     'user_id' => rand(1, 500),
                     'amount' => rand(10, 1000),
