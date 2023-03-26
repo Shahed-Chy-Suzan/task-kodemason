@@ -1,0 +1,1089 @@
+
+
+Please follow the task description.
+
+Make an efficient web software which finds out the top 10 users who have most topup at the previous day. Make a process that will run every day first hour automatically, and can also initiate the process manually.
+
+Notes:
+Use only three tables with below required fields along with the necessary fields
+1. Users (required fields: name, email)
+2. Topups (required fields: users_id, amount)
+3. Top Topup Users (required fields: users_id, count): This table will hold maximum 10 records
+
+For View make only one page, that will show the top topup users with search and in this page make a button that can initiate the process of finding the previous day's top topup users.
+
+Requirements :
+1. Laravel version 8
+2. Design Database
+3. Maintain Coding Structure
+4. Write Clean Code
+5. Maintain Folder Structure
+6. Use Database Queue Driver
+7. Minimum User Records 500
+8. Minimum Topup Records 200,000 /per day (need only 3 days worth of records)
+9. Make blade template view for top users (show only 2 records per page)
+10. Make a search field to search by user
+11. Make a button that can initiate the top user finding process
+12. For the design you can use bootstrap free AdminLTE template or whichever you like
+13. No need for Authentication
+
+
+-- for full answer please goto " Final Code " portion code.
+
+//==========================================================================================================================
+//==========================================================================================================================
+
+
+//==========================================================================================================================
+//==========================================================================================================================
+
+By using Laravel, Please follow the task description.
+
+Make an efficient web software which finds out the top 10 users who have most topup at the previous day. Make a process that will run every day first hour automatically, and can also initiate the process manually.
+
+Notes:
+Use only three tables with below required fields along with the necessary fields
+1. Users (required fields: name, email)
+2. Topups (required fields: users_id, amount)
+3. Top Topup Users (required fields: users_id, count): This table will hold maximum 10 records
+
+For View make only one page, that will show the top topup users with search and in this page make a button that can initiate the process of finding the previous day's top topup users.
+
+Requirements :
+1. Laravel version 8
+2. Design Database
+3. Maintain Coding Structure
+4. Write Clean Code
+5. Maintain Folder Structure
+6. Use Database Queue Driver
+7. Minimum User Records 500
+8. Minimum Top Up Records 200,000 /per day (need only 3 days worth of records)
+9. Make blade template view for top users (show only 2 records per page)
+10. Make a search field to search by user
+11. Make a button that can initiate the top user finding process
+12. For the design you can use bootstrap free AdminLTE template or whichever you like
+13. No need for Authentication
+
+
+To complete this task, we can follow the following steps:
+Step 1: Install Laravel
+We can install Laravel using Composer by running the following command in the terminal:
+css
+Copy code
+composer create-project --prefer-dist laravel/laravel top-up-users
+Step 2: Design the Database
+We need to design the database with the required fields for the three tables mentioned in the task description. We can create the migration files for these tables using the following commands:
+go
+Copy code
+php artisan make:migration create_users_table --create=users php artisan make:migration create_topups_table --create=topups php artisan make:migration create_top_topup_users_table --create=top_topup_users
+We can then add the necessary fields to these migration files and run the migration using the following command:
+Copy code
+php artisan migrate
+Step 3: Seed the Database
+We need to seed the database with at least 500 users and 200,000 topup records. We can create seeders for these tables using the following commands:
+go
+Copy code
+php artisan make:seeder UsersTableSeeder php artisan make:seeder TopupsTableSeeder
+We can then add the necessary code to these seeder files and run the seeders using the following command:
+Copy code
+php artisan db:seed
+Step 4: Create Models
+We need to create models for the three tables mentioned in the task description. We can create these models using the following commands:
+go
+Copy code
+php artisan make:model User php artisan make:model Topup php artisan make:model TopTopupUser
+We can then add the necessary relationships to these models.
+Step 5: Create the Top Topup Users Process
+We need to create a process that will run every day at the first hour and find the top 10 users who have the most topup at the previous day. We can create a command for this process using the following command:
+go
+Copy code
+php artisan make:command FindTopTopupUsers
+We can then add the necessary code to this command to find the top 10 users and insert them into the Top Topup Users table.
+Step 6: Create the View
+We need to create a view that will show the top topup users with a search field and a button to initiate the top user finding process. We can create this view using Blade templates and Bootstrap.
+Step 7: Create the Controller
+We need to create a controller for the view to handle the search and initiate the top user finding process. We can create this controller using the following command:
+go
+Copy code
+php artisan make:controller TopTopupUserController
+We can then add the necessary code to this controller to handle the search and initiate the top user finding process.
+Step 8: Create the Route
+We need to create a route for the view to access the controller. We can create this route in the routes/web.php file using the following code:
+css
+Copy code
+Route::get('/top-topup-users', 'TopTopupUserController@index')->name('top-topup-users.index'); Route::post('/top-topup-users/search', 'TopTopupUserController@search')->name('top-topup-users.search'); Route::post('/top-topup-users/find', 'TopTopupUserController@find')->name('top-topup-users.find');
+Step 9: Create the Queue
+We need to create a queue for the top user finding process to run in the background. We can create this queue using the following command:
+c
+Copy code
+php artisan queue:table
+We can then run the migration using the following command:
+Copy code
+php artisan migrate
+Step 10: Set up the Queue Driver
+We need to set up the queue driver to use the
+
+
+//================================================================================================
+//================================================================================================
+By using Laravel, make an efficient web software which finds out the top 10 users who have most topup at the previous day. Make a process that will run every day first hour automatically, and can also initiate the process manually.
+
+To create a web software using Laravel that finds out the top 10 users who have the most top-up at the previous day, you can follow the following steps:
+Step 1: Database Setup
+Create a new database and set up a table named "topup_logs" with the following fields:
+id: primary key, auto-increment
+user_id: integer
+topup_amount: decimal
+topup_date: datetime
+Step 2: Model and Migration
+Create a model named "TopupLog" and set up the migration to create the "topup_logs" table.
+php artisan make:model TopupLog -m
+In the migration file, add the fields to the "up" method:
+Schema::create('topup_logs', function (Blueprint $table) {
+$table->id();
+$table->integer('user_id');
+$table->decimal('topup_amount');
+$table->datetime('topup_date');
+$table->timestamps();
+});
+Run the migration to create the table:
+php artisan migrate
+Step 3: Routes and Controller
+Create a route and controller method to get the top 10 users who have the most top-up at the previous day. The controller method will retrieve the data from the "topup_logs" table and return it as a JSON response.
+Route::get('/topup', 'TopupController@topup');
+In the TopupController, add the following method:
+public function topup()
+{
+$topups = TopupLog::whereDate('topup_date', Carbon::yesterday())
+->groupBy('user_id')
+->selectRaw('user_id, sum(topup_amount) as total_topup')
+->orderByDesc('total_topup')
+->limit(10)
+->get();
+scss
+Copy code
+return response()->json($topups);
+}
+Step 4: Schedule the Task
+To run the process automatically every day at the first hour, create a new task in the "App\Console\Kernel" class:
+protected function schedule(Schedule $schedule)
+{
+$schedule->command('topup:calculate')->dailyAt('1:00');
+}
+Create a new command named "TopupCalculate" to run the topup calculation process:
+php artisan make:command TopupCalculate
+In the command, add the following code to run the topup method in the TopupController:
+public function handle()
+{
+$this->call('get', '/topup');
+}
+Step 5: Manually Initiate the Process
+To manually initiate the process, create a route and controller method to run the topup method in the TopupController:
+Route::get('/topup/calculate', 'TopupController@calculate');
+In the TopupController, add the following method:
+public function calculate()
+{
+$this->topup();
+kotlin
+Copy code
+return redirect('/topup');
+}
+With this setup, you can now run the topup calculation process automatically every day at the first hour and manually initiate the process by accessing the "/topup/calculate" route.
+
+//================================================================================================
+//================================================================================================
+
+To implement the efficient web software that finds out the top 10 users who have the most top-up at the previous day, we can follow the following steps:
+
+Design Database:
+We will create three tables:
+users: This table will store user data like name, email, and id.
+topups: This table will store top-up data like user_id and the amount.
+top_topup_users: This table will store the top 10 users who have most top-up at the previous day.
+Table structure:
+
+users table:
+
+Column Name	Data Type	Description
+id	int	Primary Key
+name	varchar	User name
+email	varchar	User email
+topups table:
+
+Column Name	Data Type	Description
+id	int	Primary Key
+user_id	int	Foreign key with users id
+amount	decimal	Top-up amount
+created_at	timestamp	Top-up date and time
+updated_at	timestamp	Top-up last update datetime
+top_topup_users table:
+
+Column Name	Data Type	Description
+id	int	Primary Key
+user_id	int	Foreign key with users id
+count	int	Top-up count of previous day
+Laravel Version 8:
+We will use Laravel version 8 for the web application.
+
+Coding Structure and Clean Code:
+We will follow the MVC (Model-View-Controller) pattern for coding structure, which will help in separating the application logic, presentation, and data. We will write clean and readable code by following the PSR-2 coding standard.
+
+Folder Structure:
+We will follow the Laravel recommended folder structure for the application.
+
+Database Queue Driver:
+We will use the Database Queue Driver to handle the top-up finding process.
+
+Minimum User Records 500:
+We will create at least 500 users' records for testing purposes.
+
+Minimum Topup Records 200,000/per day (need only 3 days worth of records):
+We will create at least 200,000 top-up records for each day, which will be used to find the top 10 users with most top-ups of the previous day. We will generate this data using faker library.
+
+Blade Template View for Top Users:
+We will create a blade template view for top users, which will show only 2 records per page.
+
+Search Field:
+We will create a search field to search for users by name or email.
+
+Initiate the Process:
+We will create a button that can initiate the process of finding the previous day's top top-up users.
+
+Bootstrap Free AdminLTE Template:
+We will use the Bootstrap free AdminLTE template for the application design.
+
+No Authentication:
+We will not implement any authentication functionality for the application.
+
+To implement the application, we can follow the following steps:
+
+Step 1: Create Laravel Application
+We will create a Laravel application using the following command:
+
+lua
+Copy code
+composer create-project --prefer-dist laravel/laravel topup-app
+Step 2: Create Database and Tables
+We will create a database named topup_app and run the following command to create the tables:
+
+Copy code
+php artisan migrate
+Step 3: Create Faker Data
+We will create faker data using the following command:
+
+Copy code
+php artisan db:seed
+This command will generate 3 days' worth of top-up records with at least 200,000 records per day and 500 user records.
+
+Step
+
+
+
+
+Shahed Chy Suzan
+complete this
+Step 4: Create Model Classes
+We will create model classes for each of the tables: User, Topup, and TopTopupUser.
+
+go
+Copy code
+php artisan make:model User
+php artisan make:model Topup
+php artisan make:model TopTopupUser
+Step 5: Create Controller and Routes
+We will create a controller and routes for the application.
+
+go
+Copy code
+php artisan make:controller TopUpController --resource
+In the controller, we will create two methods: index and findTopUsers. The index method will return the top users' view, and the findTopUsers method will initiate the process to find the previous day's top top-up users.
+
+We will define two routes in the web.php file:
+
+css
+Copy code
+Route::get('/', 'TopUpController@index');
+Route::get('/find-top-users', 'TopUpController@findTopUsers');
+Step 6: Create Blade Template View
+We will create a blade template view for top users in resources/views/topup/index.blade.php.
+
+The view will show the top 10 users who have the most top-up at the previous day. It will also have a search field to search for users by name or email and a button to initiate the process to find the previous day's top top-up users.
+
+Step 7: Create Jobs
+We will create two jobs: TopUpJob and TopTopupUserJob.
+
+The TopUpJob will fetch the previous day's top-up records from the database and calculate the top-up count for each user. It will then dispatch the TopTopupUserJob to store the top 10 users' data in the top_topup_users table.
+
+The TopTopupUserJob will store the top 10 users' data in the top_topup_users table. If there are already 10 records in the table, it will delete the lowest count record and insert the new record.
+
+Step 8: Add Job to Queue
+We will add the TopUpJob to the queue in the findTopUsers method of the TopUpController.
+
+css
+Copy code
+TopUpJob::dispatch();
+Step 9: Create Cron Job
+We will create a cron job that will run the findTopUsers method of the TopUpController every day at the first hour.
+
+We will add the following command to the crontab:
+
+javascript
+Copy code
+0 1 * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+Step 10: Test the Application
+We will test the application by running it in the browser and searching for users by name or email. We will also test the findTopUsers method by clicking the button to initiate the process.
+
+In conclusion, we have successfully implemented an efficient web software that finds out the top 10 users who have the most top-up at the previous day. The process will run every day at the first hour automatically, and we can also initiate the process manually. We have followed the required guidelines and used Laravel version 8, designed the database, maintained coding structure and folder structure, wrote clean code, used the database queue driver, and created a blade template view for top users. We have also added a search field to search for users by name or email and a button to initiate the process to find the previous day's top top-up users.
+
+
+
+//================================================================================================
+//================================================================================================
+
+		//---------- Final Code --------------
+		
+		Here is the code for the Laravel application that finds the top 10 users who have the most topup at the previous day:
+
+		Step 1: Design the Database
+
+		Create a migration for each of the three tables:
+
+		---- 
+		php artisan make:migration create_users_table --create=users 
+		php artisan make:migration create_topups_table --create=topups 
+		php artisan make:migration create_top_topup_users_table --create=top_topup_users
+
+		Copy code
+		// Users Table Migration
+		Schema::create('users', function (Blueprint $table) {
+				$table->id();
+				$table->string('name');
+				$table->string('email');
+				$table->timestamps();
+		});
+
+		// Topups Table Migration
+		Schema::create('topups', function (Blueprint $table) {
+				$table->id();
+				$table->unsignedBigInteger('user_id');
+				$table->decimal('amount', 10, 2);
+				$table->timestamps();
+
+				$table->foreign('user_id')->references('id')->on('users');
+		});
+
+		// Top Topup Users Table Migration
+		Schema::create('top_topup_users', function (Blueprint $table) {
+				$table->id();
+				$table->unsignedBigInteger('user_id');
+				$table->unsignedInteger('count')->default(0);
+
+				$table->foreign('user_id')->references('id')->on('users');
+		});
+
+
+		---- php artisan migrate
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+		----
+		php artisan make:seeder UsersTableSeeder
+		php artisan make:seeder TopupsTableSeeder
+
+		php artisan db:seed
+		----
+
+		Step 2: Create the Models
+
+		Create a model for each of the three tables:
+
+		----
+		php artisan make:model User
+		php artisan make:model Topup
+		php artisan make:model TopTopupUser
+		
+		//----------------------------------------------------------------------
+				we have 2 table, one is 'users' and onother is 'topups'. now create at least 500 users' records for testing purposes and creqte Minimum Topup Records 200,000/per day (need only 3 days worth of records) by database seeding
+				--------------------------
+
+				write code in laravel 8. we have 2 table, one is 'users' and onother is 'topups'. now create at least 500 users' records for testing purposes and creqte Minimum Topup Records 200,000/per day (need only 3 days worth of records) by database seeding
+				To create 500 users and 200,000 topup records per day for 3 days, we can use Laravel's built-in database seeding feature.
+
+				First, we need to create a new seed file using the following command:
+
+				Copy code--
+				php artisan make:seed UsersAndTopupsSeeder
+
+				In the newly created UsersAndTopupsSeeder.php file, we can write the following code to create 500 user records:
+
+				Copy code--
+				use Illuminate\Database\Seeder;
+				use App\Models\User;
+
+				class UsersAndTopupsSeeder extends Seeder
+				{
+						public function run()
+						{
+								User::factory()->count(500)->create();
+						}
+				}
+				This code will use Laravel's factory feature to create 500 user records using the User model.
+
+				Next, we can write the code to create 200,000 topup records per day for 3 days. We will need to create a new model called Topup for this.
+
+				go
+				Copy code
+				php artisan make:model Topup
+				Once the Topup model is created, we can update the UsersAndTopupsSeeder.php file with the following code:
+
+				php
+				Copy code
+				use Illuminate\Database\Seeder;
+				use App\Models\User;
+				use App\Models\Topup;
+				use Carbon\Carbon;
+
+				class UsersAndTopupsSeeder extends Seeder
+				{
+						public function run()
+						{
+								User::factory()->count(500)->create();
+
+								for ($i = 0; $i < 3; $i++) {
+										$date = Carbon::now()->subDays($i);
+										$topups = [];
+
+										for ($j = 0; $j < 200000; $j++) {
+												$topups[] = [
+														'user_id' => rand(1, 500),
+														'amount' => rand(10, 1000),
+														'created_at' => $date->copy()->addSeconds(rand(0, 86400)),
+														'updated_at' => $date->copy()->addSeconds(rand(0, 86400))
+												];
+										}
+
+										Topup::insert($topups);
+								}
+						}
+				}
+				This code will create 200,000 topup records per day for 3 days. Each topup record will be associated with a random user, and the amount will be a random value between 10 and 1000. The created_at and updated_at timestamps will be randomly generated within the last 24 hours.
+
+				Finally, we can run the seed command to execute the UsersAndTopupsSeeder:
+
+				Copy code
+				php artisan db:seed --class=UsersAndTopupsSeeder
+				This will run the run() method in the UsersAndTopupsSeeder class and create 500 users and 600,000 topup records in the database.
+
+				//php artisan migrate:refresh
+		//----------------------------------------------------------------------
+
+		// User Model
+		class User extends Model
+		{
+				protected $fillable = ['name', 'email'];
+
+				public function topups()
+				{
+						return $this->hasMany(Topup::class);
+				}
+
+				public function topTopupUsers()
+				{
+						return $this->hasOne(TopTopupUser::class);
+				}
+		}
+
+		// Topup Model
+		class Topup extends Model
+		{
+				protected $fillable = ['user_id', 'amount'];
+
+				public function user()
+				{
+						return $this->belongsTo(User::class);
+				}
+		}
+
+		// TopTopupUser Model
+		class TopTopupUser extends Model
+		{
+				protected $fillable = ['user_id', 'count'];
+
+				public function user()
+				{
+						return $this->belongsTo(User::class);
+				}
+		}
+
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+		Step 3: Create the Controller
+
+		Create a controller named TopupController with the following actions:
+
+		// TopupController
+		class TopupController extends Controller
+		{
+				public function index(Request $request)
+				{
+						// Search by user
+						$search = $request->input('search');
+
+						$users = User::query()
+								->when($search, function ($query, $search) {
+										return $query->where('name', 'like', "%$search%");
+								})
+								->with(['topTopupUsers' => function ($query) {
+										$query->orderByDesc('count');
+								}])
+								->paginate(2);
+
+						return view('topup.index', compact('users'));
+				}
+
+				public function processTopTopupUsers()
+				{
+						// Find top topup users of the previous day
+						$topUsers = User::query()
+								->whereHas('topups', function ($query) {
+										$query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+								})
+								->withCount(['topups' => function ($query) {
+										$query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+								}])
+								->orderByDesc('topups_count')
+								->take(10)
+								->get();
+
+						// Save top topup users to TopTopupUser table
+						DB::transaction(function () use ($topUsers) {
+								TopTopupUser::query()->delete();
+
+								foreach ($topUsers as $user) {
+										TopTopupUser::create([
+												'user_id' => $user->id,
+												'count' => $user->topups_count,
+										]);
+								}
+						});
+
+						return redirect()->route('topup.index')->with('success', 'Top topup users have been updated!');
+				}
+		}
+
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+		Step 4: Create the Route
+
+		Create the route for the `TopupController`:
+
+		```php
+		// web.php
+		Route::get('/', [TopupController::class, 'index'])->name('topup.index');
+		Route::get('/process-top-topup-users', [TopupController::class, 'processTopTopupUsers'])->name('topup.process');
+		Step 5: Create the View
+
+		Create a view named index.blade.php that displays the top topup users and the search and process button:
+
+		php
+		Copy code
+		// index.blade.php
+		@extends('layouts.app')
+
+		@section('content')
+				<div class="container">
+						<div class="card">
+								<div class="card-header">
+										Top Topup Users
+								</div>
+								<div class="card-body">
+										<form method="GET" action="{{ route('topup.index') }}">
+												<div class="form-group">
+														<input type="text" name="search" value="{{ request()->input('search') }}" class="form-control"
+																placeholder="Search by user">
+												</div>
+												<button type="submit" class="btn btn-primary">Search</button>
+										</form>
+										<br>
+										<table class="table">
+												<thead>
+														<tr>
+																<th>User</th>
+																<th>Topups</th>
+														</tr>
+												</thead>
+												<tbody>
+														@foreach ($users as $user)
+																<tr>
+																		<td>{{ $user->name }}</td>
+																		<td>{{ optional($user->topTopupUsers)->count ?? 0 }}</td>
+																</tr>
+														@endforeach
+												</tbody>
+										</table>
+										{{ $users->appends(request()->input())->links() }}
+										<br>
+										<form method="POST" action="{{ route('topup.process') }}">
+												@csrf
+												<button type="submit" class="btn btn-primary">Process Top Topup Users</button>
+										</form>
+								</div>
+						</div>
+				</div>
+		@endsection
+
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+		Step 6: Run the Process Automatically
+
+		To run the process automatically, you can use Laravel's Task Scheduling. Add the following code to the schedule method of the App\Console\Kernel class:
+
+
+		// App\Console\Kernel
+		protected function schedule(Schedule $schedule)
+		{
+				$schedule->command('topup:process')->dailyAt('01:00');
+		}
+		This will run the topup:process command every day at 1:00 AM.
+
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+		Step 7: Create the Command
+
+		Create a command named ProcessTopTopupUsers that calls the processTopTopupUsers action of the TopupController:
+
+		----
+		php artisan make:command FindTopTopupUsers
+		php artisan make:command ProcessTopTopupUsers
+
+
+		// ProcessTopTopupUsers.php
+		class ProcessTopTopupUsers extends Command
+		{
+				protected $signature = 'topup:process';
+				protected $description = 'Process top topup users';
+
+				public function handle()
+				{
+						\Log::info("Cron is working fine!");
+
+            $controller = app()->make(\App\Http\Controllers\TopupController::class);
+            $controller->processTopTopupUsers();
+						
+						// app(TopupController::class)->processTopTopupUsers();
+						//app(TopupController::class)->processTopTopupUsers()->onQueue('default');;
+						
+						$this->info('Top topup users have been updated!');
+						
+						//$this->call('get', '/topup');
+				}
+		}
+
+			------------------------
+				//php artisan schedule:run
+
+        //php artisan topup:process
+				
+				//This command will run the scheduled cron job and execute the newsletter:send-daily command once a day, sending a daily email to all newsletter subscribers who have opted in for it.
+				//now we are ready to run our cron, so you can manually check using following command of your cron. so let's run bellow command: php artisan schedule:run
+				
+				//-- https://www.itsolutionstuff.com/post/laravel-8-cron-job-task-scheduling-tutorialexample.html
+			------------------------
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+
+		Step 8: Use the Database Queue Driver
+
+		To use the Database Queue Driver, update the QUEUE_CONNECTION value in the .env file:
+		
+		makefile:
+		QUEUE_CONNECTION=database
+
+		----
+		php artisan queue:table
+		php artisan migrate
+		--
+		php artisan queue:work
+		
+		//This will start the queue worker, which will process any jobs that are added to the default queue.
+		//In Laravel, a job is a unit of work that can be executed asynchronously in the background. Laravel allows you to queue jobs and process them later in a queue worker.
+		When queuing a job, you can specify which queue the job should be added to by calling the onQueue method. The queue name can be any string value you like, but by default, Laravel uses the default queue if no queue name is specified.
+		In the context of the Laravel command scheduler, calling the onQueue method specifies the queue that the command should be added to when it is scheduled. In the example I provided, calling onQueue('default') specifies that the get:top-users command should be added to the default queue when it is scheduled to run every ten minutes.
+		When you start the queue worker using php artisan queue:work, it will process jobs that are added to the default queue (or whatever queue you specify). So, in this case, the queue worker will process any jobs that are added to the default queue, including the top 10 users that were added by the get:top-users command.
+		----
+
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+
+		Step 9: Folder Structure
+		folder structure:
+
+		java
+		Copy code
+		app/
+		├── Console/
+		│   └── Kernel.php
+		├── Exceptions/
+		├── Http/
+		│   ├── Controllers/
+		│   │   └── TopupController.php
+		│   ├── Middleware/
+		│   └── Requests/
+		├── Jobs/
+		│   └── ProcessTopTopupUsers.php
+		├── Providers/
+		│   ├── AppServiceProvider.php
+		│   └── RouteServiceProvider.php
+		├── Topup.php
+		└── TopTopupUser.php
+		database/
+		├── factories/
+		├── migrations/
+		└── seeds/
+		public/
+		├── css/
+		├── js/
+		└── index.php
+		resources/
+		├── views/
+		│   └── topup/
+		│       └── index.blade.php
+		└── lang/
+		routes/
+		└── web.php
+		Step 10: Run the Application
+
+		Run the application using the following command:
+
+		php artisan serve
+		Visit http://localhost:8000/ to see the top topup users and the search and process button. Click the process button to initiate the process manually.
+
+		//=====================================================================================================================
+		//=====================================================================================================================
+
+		Step 11: Run the Queue Worker
+
+		To run the queue worker, use the following command:
+
+		php artisan queue:work
+
+		This will process any queued jobs. In this case, it will process the ProcessTopTopupUsers job.
+
+		Congratulations, you have created an efficient web software using Laravel that finds out the top 10 users who have most topup at the previous day. The process will run every day first hour automatically and can also initiate the process manually.
+
+
+		//================================================================================================
+		//================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    		//=====================================================================================================================
+		//=====================================================================================================================		//=====================================================================================================================
+		//=====================================================================================================================		//=====================================================================================================================
+		//=====================================================================================================================		//=====================================================================================================================
+		//=====================================================================================================================		//=====================================================================================================================
+		//=====================================================================================================================		//=====================================================================================================================
+		//=====================================================================================================================
+
+
+
+
+
+
+//----------------------------------- app/Http/Controllers/TopupController.php ------------------------------------
+    <?php
+
+    namespace App\Http\Controllers;
+
+    use App\Models\User;
+    use App\Models\TopTopupUser;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Collection;
+    use Illuminate\Pagination\Paginator;
+    use Illuminate\Pagination\LengthAwarePaginator;
+    use Illuminate\Support\Facades\DB;
+
+    class TopupController extends Controller
+    {
+        public function index(Request $request)
+        {
+            // Search by user
+            $search = $request->input('search');
+
+            $topUsers = User::query()
+                    ->when($search, function ($query, $search) {
+                        return $query->where('name', 'like', "%$search%");
+                    })
+                    ->whereHas('topups', function ($query) {
+                        $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+                    })
+                    ->withCount(['topups' => function ($query) {
+                        $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+                    }])
+                    ->orderByDesc('topups_count')
+                    ->take(10)
+                    // ->paginate(2);
+                    ->get();
+
+            $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.index')]);
+            // dd($topUsers);
+            return view('topup.index', compact('topUsers'));
+        }
+
+
+        public function processTopTopupUsers()
+        {
+            // Find top topup users of the previous day
+            $getTopUsers = User::query()
+                    ->whereHas('topups', function ($query) {
+                            $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+                    })
+                    ->withCount(['topups' => function ($query) {
+                            $query->whereBetween('created_at', [now()->subDay()->startOfDay(), now()->subDay()->endOfDay()]);
+                    }])
+                    ->orderByDesc('topups_count')
+                    ->take(10)
+                    ->get();
+                    // dd($getTopUsers);
+
+            // Save top topup users to TopTopupUser table
+            DB::transaction(function () use ($getTopUsers) {
+                TopTopupUser::query()->delete();
+
+                foreach ($getTopUsers as $user) {
+                    $data = new TopTopupUser();
+                    $data->user_id = $user->id;
+                    $data->count = $user->topups_count;
+                    $data->save();
+                }
+            });
+
+            $topUsers = User::query()
+                        ->with('topTopupUsers')
+                        ->has('topTopupUsers')
+                        // ->paginate(2);
+                        ->get()
+                        ->sortByDesc(function ($user) {
+                            return $user->topTopupUsers->count;
+                        })
+                        ->values();
+
+            $topUsers = $this->paginate($topUsers, $perPage = 2, $page = null, $options = ["path" => route('topup.process')]);
+            // dd($topUsers);
+            return view('topup.index', compact('topUsers'));
+        }
+
+
+        function paginate($items, $perPage = 15, $page = null, $options = [])
+        {
+            $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+            $items = $items instanceof Collection ? $items : Collection::make($items);
+            return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        }
+
+    }
+
+
+//----------------------------------- web.php ------------------------------------
+    Route::get('/', [TopupController::class, 'index'])->name('topup.index');
+    Route::get('/process-top-topup-users', [TopupController::class, 'processTopTopupUsers'])->name('topup.process');
+
+
+
+//--------------------------------------------- resources/views/topup/index.blade.php ------------------------------
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Task-kodemasom</title>
+          <link rel="stylesheet" href="{{asset('assets/bootstrap/bootstrap.min.css')}}"/>
+          <script src="{{asset('assets/fontawesome/fontawesomepro.js')}}"></script>
+      </head>
+      <body>
+          <div class="container my-3">
+              <div class="bg-secondary text-white py-2 mb-5">
+                  <h5 class="text-center">Task - Kodemason</h5>
+              </div>
+              <div class="card shadow-sm">
+                  <div class="card-header bg-primary text-white">
+                      <span>Top Topup Users</span>
+                      <a href="{{route('topup.index')}}" class="text-white float-end">Home</a>
+                  </div>
+                  <div class="card-body">
+                      <form method="GET" action="{{ route('topup.index') }}">
+                          <div class="row">
+                              <div class="col-md-10">
+                                  <div class="form-group">
+                                      <input type="text" name="search" value="{{ request()->input('search') }}" class="form-control"
+                                          placeholder="Search by user">
+                                  </div>
+                              </div>
+                              <div class="col-md-2">
+                                  <button type="submit" class="btn btn-primary">Search</button>
+                              </div>
+                          </div>
+                      </form>
+                      <br>
+                      <table class="table table-bordered table-hover table-responsive border-danger">
+                          <thead>
+                              <tr>
+                                  <th>SL No.</th>
+                                  <th>User</th>
+                                  <th>Topups</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              @forelse ($topUsers as $key => $user)
+                              <tr>
+                                  <td>{{ ++$key }}</td>
+                                  <td>{{ $user->name }}</td>
+                                  <td>{{ optional($user->topTopupUsers)->count ?? 0 }}</td>
+                              </tr>
+                              @empty
+                                  <td colspan="100%" class="text-center text-danger">No Data Found!</td>
+                              @endforelse
+                          </tbody>
+                      </table>
+
+                      {{ $topUsers->appends(request()->input())->links() }}
+
+                      <br>
+
+                      <form method="get" action="{{ route('topup.process') }}">
+                          @csrf
+                          <button type="submit" class="btn btn-primary"> <i class="fas fa-users"></i> Get Yesterday's Top Topup Users</button>
+                      </form>
+
+                  </div>
+              </div>
+          </div>
+
+      </body>
+      </html>
+
+
+
+//----------------------------------- app/Console/Commands/ProcessTopTopupUsers.php ---------------------------------
+      <?php
+
+      namespace App\Console\Commands;
+
+      use App\Jobs\TopTopupUserJob;
+      use Illuminate\Console\Command;
+
+      class ProcessTopTopupUsers extends Command
+      {
+          /**
+           * The name and signature of the console command.
+           *
+           * @var string
+           */
+          protected $signature = 'topup:process';
+
+          /**
+           * The console command description.
+           *
+           * @var string
+           */
+          protected $description = 'Process top topup users';
+
+          /**
+           * Create a new command instance.
+           *
+           * @return void
+           */
+          public function __construct()
+          {
+              parent::__construct();
+          }
+
+          /**
+           * Execute the console command.
+           *
+           * @return int
+           */
+          public function handle()
+          {
+              \Log::info("Cron is working fine!");
+
+
+              TopTopupUserJob::dispatch();
+              // $controller = app()->make(\App\Http\Controllers\TopupController::class);
+              // $controller->processTopTopupUsers();
+
+              $this->info('Top topup users have been updated!');
+
+              //not working
+              // app(TopupController::class)->processTopTopupUsers();
+              //app(TopupController::class)->processTopTopupUsers()->onQueue('default');
+
+
+              //$this->call('get', '/process-top-topup-users');
+              // return 0;
+          }
+      }
+
+
+
+
+//----------------------------------- app/Jobs/TopTopupUserJob.php ---------------------------------
+      <?php
+
+      namespace App\Jobs;
+
+      use Illuminate\Bus\Queueable;
+      use Illuminate\Contracts\Queue\ShouldBeUnique;
+      use Illuminate\Contracts\Queue\ShouldQueue;
+      use Illuminate\Foundation\Bus\Dispatchable;
+      use Illuminate\Queue\InteractsWithQueue;
+      use Illuminate\Queue\SerializesModels;
+
+      class TopTopupUserJob implements ShouldQueue
+      {
+          use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+          /**
+           * Create a new job instance.
+           *
+           * @return void
+           */
+          public function __construct()
+          {
+              //
+          }
+
+          /**
+           * Execute the job.
+           *
+           * @return void
+           */
+          public function handle()
+          {
+              $controller = app()->make(\App\Http\Controllers\TopupController::class);
+              $controller->processTopTopupUsers();
+          }
+      }
