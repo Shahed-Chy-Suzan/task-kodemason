@@ -68,58 +68,60 @@ Requirements :
 To complete this task, we can follow the following steps:
 Step 1: Install Laravel
 We can install Laravel using Composer by running the following command in the terminal:
-css
-Copy code
+
 composer create-project --prefer-dist laravel/laravel top-up-users
+
 Step 2: Design the Database
 We need to design the database with the required fields for the three tables mentioned in the task description. We can create the migration files for these tables using the following commands:
-go
-Copy code
 php artisan make:migration create_users_table --create=users php artisan make:migration create_topups_table --create=topups php artisan make:migration create_top_topup_users_table --create=top_topup_users
+
 We can then add the necessary fields to these migration files and run the migration using the following command:
-Copy code
+
 php artisan migrate
+
 Step 3: Seed the Database
 We need to seed the database with at least 500 users and 200,000 topup records. We can create seeders for these tables using the following commands:
-go
-Copy code
+
 php artisan make:seeder UsersTableSeeder php artisan make:seeder TopupsTableSeeder
 We can then add the necessary code to these seeder files and run the seeders using the following command:
-Copy code
+
 php artisan db:seed
+
 Step 4: Create Models
 We need to create models for the three tables mentioned in the task description. We can create these models using the following commands:
-go
-Copy code
+
 php artisan make:model User php artisan make:model Topup php artisan make:model TopTopupUser
 We can then add the necessary relationships to these models.
+
 Step 5: Create the Top Topup Users Process
 We need to create a process that will run every day at the first hour and find the top 10 users who have the most topup at the previous day. We can create a command for this process using the following command:
-go
-Copy code
+
 php artisan make:command FindTopTopupUsers
 We can then add the necessary code to this command to find the top 10 users and insert them into the Top Topup Users table.
+
 Step 6: Create the View
 We need to create a view that will show the top topup users with a search field and a button to initiate the top user finding process. We can create this view using Blade templates and Bootstrap.
+
 Step 7: Create the Controller
 We need to create a controller for the view to handle the search and initiate the top user finding process. We can create this controller using the following command:
-go
-Copy code
+
 php artisan make:controller TopTopupUserController
+
 We can then add the necessary code to this controller to handle the search and initiate the top user finding process.
+
 Step 8: Create the Route
 We need to create a route for the view to access the controller. We can create this route in the routes/web.php file using the following code:
-css
-Copy code
+
 Route::get('/top-topup-users', 'TopTopupUserController@index')->name('top-topup-users.index'); Route::post('/top-topup-users/search', 'TopTopupUserController@search')->name('top-topup-users.search'); Route::post('/top-topup-users/find', 'TopTopupUserController@find')->name('top-topup-users.find');
+
 Step 9: Create the Queue
 We need to create a queue for the top user finding process to run in the background. We can create this queue using the following command:
-c
-Copy code
+
 php artisan queue:table
 We can then run the migration using the following command:
-Copy code
+
 php artisan migrate
+
 Step 10: Set up the Queue Driver
 We need to set up the queue driver to use the
 
@@ -129,12 +131,14 @@ We need to set up the queue driver to use the
 By using Laravel, make an efficient web software which finds out the top 10 users who have most topup at the previous day. Make a process that will run every day first hour automatically, and can also initiate the process manually.
 
 To create a web software using Laravel that finds out the top 10 users who have the most top-up at the previous day, you can follow the following steps:
+
 Step 1: Database Setup
 Create a new database and set up a table named "topup_logs" with the following fields:
 id: primary key, auto-increment
 user_id: integer
 topup_amount: decimal
 topup_date: datetime
+
 Step 2: Model and Migration
 Create a model named "TopupLog" and set up the migration to create the "topup_logs" table.
 php artisan make:model TopupLog -m
@@ -148,46 +152,46 @@ $table->timestamps();
 });
 Run the migration to create the table:
 php artisan migrate
+
 Step 3: Routes and Controller
 Create a route and controller method to get the top 10 users who have the most top-up at the previous day. The controller method will retrieve the data from the "topup_logs" table and return it as a JSON response.
 Route::get('/topup', 'TopupController@topup');
 In the TopupController, add the following method:
-public function topup()
-{
-$topups = TopupLog::whereDate('topup_date', Carbon::yesterday())
-->groupBy('user_id')
-->selectRaw('user_id, sum(topup_amount) as total_topup')
-->orderByDesc('total_topup')
-->limit(10)
-->get();
-scss
-Copy code
-return response()->json($topups);
-}
+	public function topup()
+	{
+		$topups = TopupLog::whereDate('topup_date', Carbon::yesterday())
+			->groupBy('user_id')
+			->selectRaw('user_id, sum(topup_amount) as total_topup')
+			->orderByDesc('total_topup')
+			->limit(10)
+			->get();
+
+			return response()->json($topups);
+	}
+
 Step 4: Schedule the Task
 To run the process automatically every day at the first hour, create a new task in the "App\Console\Kernel" class:
-protected function schedule(Schedule $schedule)
-{
-$schedule->command('topup:calculate')->dailyAt('1:00');
-}
+	protected function schedule(Schedule $schedule)
+	{
+			$schedule->command('topup:calculate')->dailyAt('1:00');
+	}
 Create a new command named "TopupCalculate" to run the topup calculation process:
 php artisan make:command TopupCalculate
 In the command, add the following code to run the topup method in the TopupController:
-public function handle()
-{
-$this->call('get', '/topup');
-}
+	public function handle()
+	{
+	$this->call('get', '/topup');
+	}
+	
 Step 5: Manually Initiate the Process
 To manually initiate the process, create a route and controller method to run the topup method in the TopupController:
-Route::get('/topup/calculate', 'TopupController@calculate');
+	Route::get('/topup/calculate', 'TopupController@calculate');
 In the TopupController, add the following method:
-public function calculate()
-{
-$this->topup();
-kotlin
-Copy code
-return redirect('/topup');
-}
+	public function calculate()
+	{
+		$this->topup();
+		return redirect('/topup');
+	}
 With this setup, you can now run the topup calculation process automatically every day at the first hour and manually initiate the process by accessing the "/topup/calculate" route.
 
 //================================================================================================
@@ -260,50 +264,36 @@ To implement the application, we can follow the following steps:
 Step 1: Create Laravel Application
 We will create a Laravel application using the following command:
 
-lua
-Copy code
 composer create-project --prefer-dist laravel/laravel topup-app
+
 Step 2: Create Database and Tables
 We will create a database named topup_app and run the following command to create the tables:
 
-Copy code
 php artisan migrate
 Step 3: Create Faker Data
 We will create faker data using the following command:
 
-Copy code
 php artisan db:seed
 This command will generate 3 days' worth of top-up records with at least 200,000 records per day and 500 user records.
 
-Step
-
-
-
-
-Shahed Chy Suzan
-complete this
 Step 4: Create Model Classes
 We will create model classes for each of the tables: User, Topup, and TopTopupUser.
 
-go
-Copy code
 php artisan make:model User
 php artisan make:model Topup
 php artisan make:model TopTopupUser
+
 Step 5: Create Controller and Routes
 We will create a controller and routes for the application.
 
-go
-Copy code
 php artisan make:controller TopUpController --resource
 In the controller, we will create two methods: index and findTopUsers. The index method will return the top users' view, and the findTopUsers method will initiate the process to find the previous day's top top-up users.
 
 We will define two routes in the web.php file:
 
-css
-Copy code
 Route::get('/', 'TopUpController@index');
 Route::get('/find-top-users', 'TopUpController@findTopUsers');
+
 Step 6: Create Blade Template View
 We will create a blade template view for top users in resources/views/topup/index.blade.php.
 
@@ -319,17 +309,16 @@ The TopTopupUserJob will store the top 10 users' data in the top_topup_users tab
 Step 8: Add Job to Queue
 We will add the TopUpJob to the queue in the findTopUsers method of the TopUpController.
 
-css
-Copy code
 TopUpJob::dispatch();
+
 Step 9: Create Cron Job
 We will create a cron job that will run the findTopUsers method of the TopUpController every day at the first hour.
 
 We will add the following command to the crontab:
 
-javascript
-Copy code
+
 0 1 * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
+
 Step 10: Test the Application
 We will test the application by running it in the browser and searching for users by name or email. We will also test the findTopUsers method by clicking the button to initiate the process.
 
@@ -431,13 +420,9 @@ In conclusion, we have successfully implemented an efficient web software that f
 
 				Next, we can write the code to create 200,000 topup records per day for 3 days. We will need to create a new model called Topup for this.
 
-				go
-				Copy code
 				php artisan make:model Topup
 				Once the Topup model is created, we can update the UsersAndTopupsSeeder.php file with the following code:
 
-				php
-				Copy code
 				use Illuminate\Database\Seeder;
 				use App\Models\User;
 				use App\Models\Topup;
@@ -581,16 +566,13 @@ In conclusion, we have successfully implemented an efficient web software that f
 
 		Create the route for the `TopupController`:
 
-		```php
 		// web.php
 		Route::get('/', [TopupController::class, 'index'])->name('topup.index');
 		Route::get('/process-top-topup-users', [TopupController::class, 'processTopTopupUsers'])->name('topup.process');
+		
 		Step 5: Create the View
-
 		Create a view named index.blade.php that displays the top topup users and the search and process button:
 
-		php
-		Copy code
 		// index.blade.php
 		@extends('layouts.app')
 
@@ -729,8 +711,6 @@ In conclusion, we have successfully implemented an efficient web software that f
 		Step 9: Folder Structure
 		folder structure:
 
-		java
-		Copy code
 		app/
 		├── Console/
 		│   └── Kernel.php
@@ -785,6 +765,9 @@ In conclusion, we have successfully implemented an efficient web software that f
 
 		//================================================================================================
 		//================================================================================================
+		//================================================================================================
+		//================================================================================================
+		//================================================================================================
 
 
 
@@ -794,22 +777,9 @@ In conclusion, we have successfully implemented an efficient web software that f
 
 
 
-
-
-
-
-
-    		//=====================================================================================================================
-		//=====================================================================================================================		//=====================================================================================================================
-		//=====================================================================================================================		//=====================================================================================================================
-		//=====================================================================================================================		//=====================================================================================================================
-		//=====================================================================================================================		//=====================================================================================================================
-		//=====================================================================================================================		//=====================================================================================================================
-		//=====================================================================================================================
-
-
-
-
+//================================================================================================
+												// -- My Project Code --//
+//================================================================================================
 
 
 //----------------------------------- app/Http/Controllers/TopupController.php ------------------------------------
@@ -1087,3 +1057,9 @@ In conclusion, we have successfully implemented an efficient web software that f
               $controller->processTopTopupUsers();
           }
       }
+
+
+
+//================================================================================================
+//================================================================================================		//================================================================================================
+//================================================================================================
